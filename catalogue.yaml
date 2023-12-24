@@ -23,3 +23,24 @@
     ansible.builtin.get_url:
      url: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
      dest: /tmp
+
+  - name: unzip downloaded file
+    ansible.builtin.unarchive:
+     src: /tmp/catalogue.zip
+     dest: /app
+     remote_src: yes
+
+  - name: npm install in app directory
+    ansible.builtin.command: npm install
+    args:
+      chdir: /app
+
+  - name: copy to catalogue service
+    ansible.builtin.copy:
+     src: catalogue.service
+     dest: /etc/systemd/system/catalogue.service
+
+  - name: systemctl daemon
+    ansible.builtin.systemd_service:
+     daemon_reload: true
+    
