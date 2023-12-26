@@ -1,0 +1,80 @@
+- name: user server
+  hosts: user
+  become: yes
+  tasks:
+
+- name: disable and enable nodejs
+  ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
+
+- name: install nodejs
+  ansible.builtin.package:
+   name: nodejs
+   state: present
+
+- name: create user
+  ansible.builtin.user:
+   name: roboshop
+   state: present
+
+- name: remove directory
+  ansible.builtin.file:
+   path: /app
+   state: absent
+
+- name: create a directory
+  ansible.builtin.file:
+   path: /app
+   state: directory
+
+- name: download file
+  ansible.builtin.get_url:
+   url: https://roboshop-builds.s3.amazonaws.com/user.zip
+   dest: /tmp
+
+- name: unzip downloaded file
+  ansible.builtin.unarchive:
+   src: /tmp/catalogue.zip
+   dest: /app
+   remote_src: yes
+
+- name: install dependencies
+  ansible.builtin.command: npm install 
+  args:
+      chdir: /ap
+
+- name: copy from user service
+  ansible.builtin.copy:
+   src: user.service
+   dest: /etc/systemd/system/user.service
+
+- name: daemon reload
+  ansible.builtin.systemd_service:
+   daemon_reload: true
+
+- name: copy from mongo repo
+  ansible.builtin.copy:
+   src: mongodb.repo
+   dest: /etc/yum.repos.d/mongo.repo
+
+- name: install mongodb org shell
+  ansible.builtin.dnf:
+   name: mongodb-org-shell
+   state: present
+
+- name: get the users count
+  ansible.builtin.command:  mongo --host mongodb.daws76s.online --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
+  register: user_count
+
+- name: load user data
+  ansible.builtin.command: mongo --host mongodb.saanvi.website </app/schema/user.js
+  when: user-count.stdout == "0"
+
+- name: start and enable user
+  ansible.builtin.service:
+   name: user
+   state: restarted
+   enabled: yes
+  
+   
+  
+  

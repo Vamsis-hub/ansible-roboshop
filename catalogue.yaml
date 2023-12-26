@@ -14,6 +14,11 @@
     ansible.builtin.user:
       name: roboshop
 
+  - name: remove directory
+    ansible.builtin.file:
+     path: /app
+     state: absent
+    
   - name: create directory
     ansible.builtin.file:
      path: /app
@@ -60,7 +65,7 @@
 
   - name: load catalogue data
     ansible.builtin.command: mongo --host mongodb.saanvi.website < /app/schema/catalogue.js
-    when: product_count.stdout == 0  
+    when: product_count.stdout == "0" 
 
   - name: system restart
     ansible.builtin.service:
