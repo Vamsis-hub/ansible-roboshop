@@ -32,14 +32,14 @@
 
   - name: unzip downloaded file
     ansible.builtin.unarchive:
-     src: /tmp/catalogue.zip
+     src: /tmp/user.zip
      dest: /app
      remote_src: yes
 
   - name: install dependencies
     ansible.builtin.command: npm install 
     args:
-      chdir: /ap
+      chdir: /app
 
   - name: copy from user service
     ansible.builtin.copy:
@@ -61,7 +61,7 @@
      state: present
 
   - name: get the users count
-    ansible.builtin.command:  mongo --host mongodb.daws76s.online --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
+    ansible.builtin.command:  mongo --host mongodb.saanvi.website --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
     register: user_count
 
   - name: load user data
