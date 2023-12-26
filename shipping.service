@@ -3,7 +3,7 @@ Description=Shipping Service
 
 [Service]
 User=roboshop
-Environment=CART_ENDPOINT=catalogue.saanvi.website:8080
+Environment=CART_ENDPOINT=cart.saanvi.website:8080
 Environment=DB_HOST=mysql.saanvi.website
 ExecStart=/bin/java -jar /app/shipping.jar
 SyslogIdentifier=shipping
