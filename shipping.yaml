@@ -53,7 +53,7 @@
      state: present
 
   - name: load schema
-    ansible.builtin.command: mysql -h mysql.saanvi.website -uroot -pRoboShop@1 < /app/schema/shipping.sql 
+    ansible.builtin.shell: mysql -h mysql.saanvi.website -uroot -pRoboShop@1 < /app/schema/shipping.sql 
 
   - name: start and enable shipping
     ansible.builtin.service:
